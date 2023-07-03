@@ -8,8 +8,8 @@ export type Game = {
 export type Cell = {
 	id: number;
 	isMine: boolean;
-    isRevealed: boolean;
-    mineCount: number;
+	isRevealed: boolean;
+	mineCount: number;
 };
 
 export enum GameDifficulty {

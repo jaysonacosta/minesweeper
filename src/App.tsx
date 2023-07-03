@@ -1,7 +1,12 @@
 import Home from './pages/home/Home';
 
 function App() {
-	return <Home />;
+	return (
+		<>
+			<h1 className=" text-4xl">Minesweeper</h1>
+			<Home />
+		</>
+	);
 }
 
 export default App;

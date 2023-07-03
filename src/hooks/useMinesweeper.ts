@@ -4,22 +4,28 @@ import { Cell, Game, GameDifficulty } from '../types/Game';
 export function useMinesweeper() {
 	const [isGameOver, setIsGameOver] = useState(false);
 
-	const board = Array<Cell>(GameDifficulty.NOVICE).map(
-		(_, idx): Cell => ({
-			id: idx,
-			isMine: false,
-			isRevealed: false,
-			mineCount: 0,
-		})
-	);
+	const board = new Array(Math.pow(GameDifficulty.NOVICE, 2))
+		.fill(undefined)
+		.map(
+			(_, idx): Cell => ({
+				id: idx,
+				isMine: false,
+				isRevealed: false,
+				mineCount: 0,
+			})
+		);
+
+	const [gameBoard, setGameBoard] = useState<Cell[]>(board);
 
 	const handleCellClick = (id: number) => {
-		const cell = board.find((cellObj) => cellObj.id === id);
+		const newBoard = [...gameBoard];
+		const cell = newBoard.find((cellObj) => cellObj.id === id);
 		if (cell) {
 			cell.isRevealed = true;
 			if (cell.isMine) {
 				setIsGameOver(true);
 			}
+			setGameBoard(newBoard);
 		}
 	};
 
@@ -28,7 +34,7 @@ export function useMinesweeper() {
 	};
 
 	const game: Game = {
-		board,
+		board: gameBoard,
 		gameOver: isGameOver,
 		handleCellClick,
 		handleReset,
