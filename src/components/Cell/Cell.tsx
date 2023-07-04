@@ -1,25 +1,24 @@
 export default function Cell({
-	id,
+	pos,
 	handleCellClick,
+	isMine,
 	isRevealed,
 }: {
-	id: number;
-	handleCellClick: (id: number) => void;
+	pos: { row: number; column: number };
+	handleCellClick: (pos: { row: number; column: number }) => void;
 	isMine: boolean;
 	isRevealed: boolean;
 }) {
 	return (
 		<div
 			onClick={() => {
-				handleCellClick(id);
+				handleCellClick(pos);
 			}}
 			className={`grid h-8 w-8 cursor-pointer justify-items-center rounded-sm border-2 ${
-				!isRevealed
-					? 'border-slate-500 bg-slate-600'
-					: 'border-red-500 bg-red-600'
-			}`}
+				!isMine ? 'border-slate-500 bg-blue-600' : 'border-red-500 bg-red-600'
+			} ${!isRevealed ? 'border-yellow-300' : 'border-green-300'}`}
 		>
-			{id}
+			{pos.row}, {pos.column}
 		</div>
 	);
 }

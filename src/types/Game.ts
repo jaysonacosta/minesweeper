@@ -1,19 +1,26 @@
 export type Game = {
-	board: Cell[];
+	board: Cell[][];
 	gameOver: boolean;
-	handleCellClick: (id: number) => void;
+	handleCellClick: (pos: { row: number; column: number }) => void;
 	handleReset: () => void;
 };
 
 export type Cell = {
-	id: number;
+	pos: { row: number; column: number };
 	isMine: boolean;
 	isRevealed: boolean;
 	mineCount: number;
 };
 
 export enum GameDifficulty {
-	NOVICE = 9,
-	INTERMEDIATE = 16,
-	EXPERT = 32,
+	NOVICE = 'NOVICE',
+	INTERMEDIATE = 'INTERMEDIATE',
+	EXPERT = 'EXPERT',
+	CUSTOM = 'CUSTOM',
+}
+
+export interface BoardProperties {
+	height: number;
+	width: number;
+	mines: number;
 }

@@ -1,25 +1,85 @@
 import { useState } from 'react';
-import { Cell, Game, GameDifficulty } from '../types/Game';
+import { BoardProperties, Cell, Game, GameDifficulty } from '../types/Game';
 
-export function useMinesweeper() {
-	const [isGameOver, setIsGameOver] = useState(false);
+function createBoardProperties(
+	difficulty: GameDifficulty = GameDifficulty.NOVICE
+) {
+	let properties: BoardProperties;
+	switch (difficulty) {
+		case GameDifficulty.NOVICE:
+			properties = { height: 9, width: 9, mines: 10 };
+			break;
+		case GameDifficulty.INTERMEDIATE:
+			properties = { height: 16, width: 16, mines: 40 };
+			break;
+		case GameDifficulty.EXPERT:
+			properties = { height: 16, width: 30, mines: 99 };
+			break;
+		case GameDifficulty.CUSTOM:
+			// TODO
+			properties = { height: 9, width: 9, mines: 10 };
+			break;
+	}
 
-	const board = new Array(Math.pow(GameDifficulty.NOVICE, 2))
-		.fill(undefined)
-		.map(
-			(_, idx): Cell => ({
-				id: idx,
+	return properties;
+}
+
+function createBoard(properties: BoardProperties) {
+	const board = new Array(properties.height).fill(undefined).map((_, row) =>
+		new Array(properties.width).fill(undefined).map(
+			(_, column): Cell => ({
+				pos: { row, column },
 				isMine: false,
 				isRevealed: false,
 				mineCount: 0,
 			})
-		);
+		)
+	);
 
-	const [gameBoard, setGameBoard] = useState<Cell[]>(board);
+	return board;
+}
 
-	const handleCellClick = (id: number) => {
+/** *
+ * Sets the mines of the Minesweeper board after clicking the first cell
+ * @param id The ID of the cell that was just clicked. This should not be a mine.
+ */
+const setMines = (id: number) => {
+	// const newBoard = [...gameBoard];
+	// let mineCount = 10;
+	// newBoard.forEach((cell) => {
+	// 	if (cell.id !== id) {
+	// 		const isMine = Math.random() > 0.9 ? true : false;
+	// 		if (isMine) {
+	// 			if (mineCount > 0) {
+	// 				cell.isMine = isMine;
+	// 				mineCount--;
+	// 			}
+	// 		}
+	// 	}
+	// });
+};
+
+export function useMinesweeper() {
+	const [isGameStarted, setIsGameStarted] = useState(false);
+	const [isGameOver, setIsGameOver] = useState(false);
+	const boardProperties = createBoardProperties();
+	const board = createBoard(boardProperties);
+	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
+
+	const handleCellClick = ({
+		row,
+		column,
+	}: {
+		row: number;
+		column: number;
+	}) => {
+		if (!isGameStarted) {
+			// setMines(id);
+			setIsGameStarted(true);
+		}
+
 		const newBoard = [...gameBoard];
-		const cell = newBoard.find((cellObj) => cellObj.id === id);
+		const cell = newBoard[row][column];
 		if (cell) {
 			cell.isRevealed = true;
 			if (cell.isMine) {
@@ -42,3 +102,7 @@ export function useMinesweeper() {
 
 	return game;
 }
+
+export const plus = (a: number, b: number) => {
+	return a + b;
+};
