@@ -52,8 +52,8 @@ function createBoard(properties: BoardProperties) {
 
 /**
  * Generates a random number between `min` and `max`.
- * @param min The lowest number that can be generated.
- * @param max The highest number that can be generated.
+ * @param min The lowest number that can be generated (inclusive).
+ * @param max The highest number that can be generated (exclusive).
  * @returns A randomly generated number that's inclusive at the min and not max.
  */
 function getRandomInt(min: number, max: number) {
