@@ -1,11 +1,13 @@
+import { CellPosition } from '../../types/Game';
+
 export default function Cell({
 	pos,
 	handleCellClick,
 	isMine,
 	isRevealed,
 }: {
-	pos: { row: number; column: number };
-	handleCellClick: (pos: { row: number; column: number }) => void;
+	pos: CellPosition;
+	handleCellClick: (pos: CellPosition) => void;
 	isMine: boolean;
 	isRevealed: boolean;
 }) {

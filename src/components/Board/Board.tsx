@@ -4,9 +4,9 @@ import Cell from '../Cell/';
 export default function Board({ board, handleCellClick }: Game) {
 	return (
 		<div className="flex flex-col gap-1">
-			{board.map((row) => {
+			{board.map((row, idx) => {
 				return (
-					<div className="flex gap-1">
+					<div key={idx} className="flex gap-1">
 						{row.map((cell) => {
 							return (
 								<Cell

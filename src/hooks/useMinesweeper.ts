@@ -1,5 +1,11 @@
 import { useState } from 'react';
-import { BoardProperties, Cell, Game, GameDifficulty } from '../types/Game';
+import {
+	BoardProperties,
+	Cell,
+	CellPosition,
+	Game,
+	GameDifficulty,
+} from '../types/Game';
 
 function createBoardProperties(
 	difficulty: GameDifficulty = GameDifficulty.NOVICE
@@ -24,6 +30,11 @@ function createBoardProperties(
 	return properties;
 }
 
+/**
+ * Creates an unitialized 2-Dimensional array to represent the Minesweeper board.
+ * @param properties The properties of the board.
+ * @returns A 2-Dimensional array that represents the board.
+ */
 function createBoard(properties: BoardProperties) {
 	const board = new Array(properties.height).fill(undefined).map((_, row) =>
 		new Array(properties.width).fill(undefined).map(
@@ -39,26 +50,20 @@ function createBoard(properties: BoardProperties) {
 	return board;
 }
 
-/** *
- * Sets the mines of the Minesweeper board after clicking the first cell
- * @param id The ID of the cell that was just clicked. This should not be a mine.
+/**
+ * Generates a random number between `min` and `max`.
+ * @param min The lowest number that can be generated.
+ * @param max The highest number that can be generated.
+ * @returns A randomly generated number that's inclusive at the min and not max.
  */
-const setMines = (id: number) => {
-	// const newBoard = [...gameBoard];
-	// let mineCount = 10;
-	// newBoard.forEach((cell) => {
-	// 	if (cell.id !== id) {
-	// 		const isMine = Math.random() > 0.9 ? true : false;
-	// 		if (isMine) {
-	// 			if (mineCount > 0) {
-	// 				cell.isMine = isMine;
-	// 				mineCount--;
-	// 			}
-	// 		}
-	// 	}
-	// });
-};
+function getRandomIntInclusive(min: number, max: number) {
+	return Math.floor(Math.random() * (max - min) + min);
+}
 
+/**
+ * A React hook to initialize a Minesweeper game.
+ * @returns A 2-Dimensional array representation of the board.
+ */
 export function useMinesweeper() {
 	const [isGameStarted, setIsGameStarted] = useState(false);
 	const [isGameOver, setIsGameOver] = useState(false);
@@ -66,15 +71,36 @@ export function useMinesweeper() {
 	const board = createBoard(boardProperties);
 	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
 
-	const handleCellClick = ({
-		row,
-		column,
-	}: {
-		row: number;
-		column: number;
-	}) => {
+	/**
+	 * Sets the mines of the Minesweeper board after clicking the first cell
+	 * @param pos The position (coordinates) of the cell that was just clicked. This should not be a mine.
+	 */
+	const setMines = ({ row, column }: CellPosition) => {
+		const newBoard = [...gameBoard];
+		let mineCount = boardProperties.mines;
+		while (mineCount !== 0) {
+			const randomRow = getRandomIntInclusive(0, boardProperties.height);
+			const randomColumn = getRandomIntInclusive(0, boardProperties.width);
+			const cell = newBoard[randomRow][randomColumn];
+			if (cell.pos.row === row && cell.pos.column === column) {
+				continue;
+			}
+			if (!cell.isMine) {
+				cell.isMine = true;
+				mineCount = mineCount - 1;
+			}
+		}
+
+		setGameBoard(newBoard);
+	};
+
+	/**
+	 * Handles the click event for a Cell.
+	 * @param pos The position of the `Cell`.
+	 */
+	const handleCellClick = ({ row, column }: CellPosition) => {
 		if (!isGameStarted) {
-			// setMines(id);
+			setMines({ row, column });
 			setIsGameStarted(true);
 		}
 

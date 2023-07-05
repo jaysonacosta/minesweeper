@@ -1,15 +1,20 @@
 export type Game = {
 	board: Cell[][];
 	gameOver: boolean;
-	handleCellClick: (pos: { row: number; column: number }) => void;
+	handleCellClick: (pos: CellPosition) => void;
 	handleReset: () => void;
 };
 
 export type Cell = {
-	pos: { row: number; column: number };
+	pos: CellPosition;
 	isMine: boolean;
 	isRevealed: boolean;
 	mineCount: number;
+};
+
+export type CellPosition = {
+	row: number;
+	column: number;
 };
 
 export enum GameDifficulty {
