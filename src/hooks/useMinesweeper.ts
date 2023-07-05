@@ -56,7 +56,7 @@ function createBoard(properties: BoardProperties) {
  * @param max The highest number that can be generated.
  * @returns A randomly generated number that's inclusive at the min and not max.
  */
-function getRandomIntInclusive(min: number, max: number) {
+function getRandomInt(min: number, max: number) {
 	return Math.floor(Math.random() * (max - min) + min);
 }
 
@@ -79,8 +79,8 @@ export function useMinesweeper() {
 		const newBoard = [...gameBoard];
 		let mineCount = boardProperties.mines;
 		while (mineCount !== 0) {
-			const randomRow = getRandomIntInclusive(0, boardProperties.height);
-			const randomColumn = getRandomIntInclusive(0, boardProperties.width);
+			const randomRow = getRandomInt(0, boardProperties.height);
+			const randomColumn = getRandomInt(0, boardProperties.width);
 			const cell = newBoard[randomRow][randomColumn];
 			if (cell.pos.row === row && cell.pos.column === column) {
 				continue;
@@ -128,7 +128,3 @@ export function useMinesweeper() {
 
 	return game;
 }
-
-export const plus = (a: number, b: number) => {
-	return a + b;
-};
