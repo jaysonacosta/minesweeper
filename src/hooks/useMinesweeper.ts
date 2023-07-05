@@ -6,6 +6,7 @@ import {
 	Game,
 	GameDifficulty,
 } from '../types/Game';
+import useGameTimer from './useGameTimer';
 
 function createBoardProperties(
 	difficulty: GameDifficulty = GameDifficulty.NOVICE
@@ -70,6 +71,7 @@ export function useMinesweeper() {
 	const boardProperties = createBoardProperties();
 	const board = createBoard(boardProperties);
 	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
+	const [secondsElapsed, handleTimerStart, handleTimerStop] = useGameTimer();
 
 	/**
 	 * Sets the mines of the Minesweeper board after clicking the first cell
@@ -102,6 +104,7 @@ export function useMinesweeper() {
 		if (!isGameStarted) {
 			setMines({ row, column });
 			setIsGameStarted(true);
+			handleTimerStart();
 		}
 
 		const newBoard = [...gameBoard];
@@ -110,6 +113,7 @@ export function useMinesweeper() {
 			cell.isRevealed = true;
 			if (cell.isMine) {
 				setIsGameOver(true);
+				handleTimerStop();
 			}
 			setGameBoard(newBoard);
 		}
@@ -121,7 +125,9 @@ export function useMinesweeper() {
 
 	const game: Game = {
 		board: gameBoard,
-		gameOver: isGameOver,
+		properties: boardProperties,
+		secondsElapsed,
+		isGameOver,
 		handleCellClick,
 		handleReset,
 	};

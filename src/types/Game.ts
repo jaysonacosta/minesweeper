@@ -1,6 +1,8 @@
 export type Game = {
 	board: Cell[][];
-	gameOver: boolean;
+	properties: BoardProperties;
+	secondsElapsed: number;
+	isGameOver: boolean;
 	handleCellClick: (pos: CellPosition) => void;
 	handleReset: () => void;
 };
