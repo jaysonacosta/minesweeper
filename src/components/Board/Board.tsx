@@ -27,6 +27,7 @@ export default function Board({
 										isMine={cell.isMine}
 										isRevealed={cell.isRevealed}
 										handleCellClick={handleCellClick}
+										mineCount={cell.mineCount}
 									/>
 								);
 							})}

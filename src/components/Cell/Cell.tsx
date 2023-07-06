@@ -5,11 +5,13 @@ export default function Cell({
 	handleCellClick,
 	isMine,
 	isRevealed,
+	mineCount,
 }: {
 	pos: CellPosition;
 	handleCellClick: (pos: CellPosition) => void;
 	isMine: boolean;
 	isRevealed: boolean;
+	mineCount: number;
 }) {
 	return (
 		<div
@@ -20,7 +22,7 @@ export default function Cell({
 				!isRevealed ? 'bg-slate-500' : 'bg-slate-400'
 			}`}
 		>
-			{isMine ? 'B' : ''}
+			{isMine ? 'B' : mineCount}
 		</div>
 	);
 }

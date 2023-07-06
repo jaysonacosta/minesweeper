@@ -51,6 +51,98 @@ function createBoard(properties: BoardProperties) {
 	return board;
 }
 
+const countMinesAroundCell = (
+	board: Cell[][],
+	lastRow: number,
+	lastColumn: number,
+	{ row, column }: CellPosition
+) => {
+	let topLeftCell = 0;
+	let topCell = 0;
+	let topRightCell = 0;
+	let rightCell = 0;
+	let bottomRightCell = 0;
+	let bottomCell = 0;
+	let bottomLeftCell = 0;
+	let leftCell = 0;
+
+	if (row === 0) {
+		// Cell is in the first row
+		bottomCell = board[row + 1][column].isMine ? 1 : 0;
+
+		if (column === 0) {
+			// Cell is in the first row and first column
+			bottomRightCell = board[row + 1][column + 1].isMine ? 1 : 0;
+			rightCell = board[row][column + 1].isMine ? 1 : 0;
+		} else if (column === lastColumn) {
+			// Cell is in the first row and last column
+			bottomLeftCell = board[row + 1][column - 1].isMine ? 1 : 0;
+			leftCell = board[row][column - 1].isMine ? 1 : 0;
+		} else {
+			// Cell is in the first row and any column between first and last
+			bottomRightCell = board[row + 1][column + 1].isMine ? 1 : 0;
+			rightCell = board[row][column + 1].isMine ? 1 : 0;
+			bottomLeftCell = board[row + 1][column - 1].isMine ? 1 : 0;
+			leftCell = board[row][column - 1].isMine ? 1 : 0;
+		}
+	} else if (row === lastRow) {
+		// Cell is in the last row
+		topCell = board[row - 1][column].isMine ? 1 : 0;
+
+		if (column === 0) {
+			// Cell is in the last row and first column
+			topRightCell = board[row - 1][column + 1].isMine ? 1 : 0;
+			rightCell = board[row][column + 1].isMine ? 1 : 0;
+		} else if (column === lastColumn) {
+			// Cell is in the last row and last column
+			topLeftCell = board[row - 1][column - 1].isMine ? 1 : 0;
+			leftCell = board[row][column - 1].isMine ? 1 : 0;
+		} else {
+			// Cell is in the last row and any column between first and last
+			topRightCell = board[row - 1][column + 1].isMine ? 1 : 0;
+			rightCell = board[row][column + 1].isMine ? 1 : 0;
+			topLeftCell = board[row - 1][column - 1].isMine ? 1 : 0;
+			leftCell = board[row][column - 1].isMine ? 1 : 0;
+		}
+	} else {
+		// Cell is in any row between the first and last
+		topCell = board[row - 1][column].isMine ? 1 : 0;
+		bottomCell = board[row + 1][column].isMine ? 1 : 0;
+
+		if (column === 0) {
+			// Cell is in the last row and first column
+			topRightCell = board[row - 1][column + 1].isMine ? 1 : 0;
+			rightCell = board[row][column + 1].isMine ? 1 : 0;
+			bottomRightCell = board[row + 1][column + 1].isMine ? 1 : 0;
+		} else if (column === lastColumn) {
+			// Cell is in the last row and last column
+			topLeftCell = board[row - 1][column - 1].isMine ? 1 : 0;
+			leftCell = board[row][column - 1].isMine ? 1 : 0;
+			bottomLeftCell = board[row + 1][column - 1].isMine ? 1 : 0;
+		} else {
+			// Cell is in the last row and any column between first and last
+			topRightCell = board[row - 1][column + 1].isMine ? 1 : 0;
+			rightCell = board[row][column + 1].isMine ? 1 : 0;
+			bottomRightCell = board[row + 1][column + 1].isMine ? 1 : 0;
+			topLeftCell = board[row - 1][column - 1].isMine ? 1 : 0;
+			leftCell = board[row][column - 1].isMine ? 1 : 0;
+			bottomLeftCell = board[row + 1][column - 1].isMine ? 1 : 0;
+		}
+	}
+
+	const totalMineCount =
+		topLeftCell +
+		topCell +
+		topRightCell +
+		rightCell +
+		bottomRightCell +
+		bottomCell +
+		bottomLeftCell +
+		leftCell;
+
+	return totalMineCount;
+};
+
 /**
  * Generates a random number between `min` and `max`.
  * @param min The lowest number that can be generated (inclusive).
@@ -72,6 +164,20 @@ export function useMinesweeper() {
 	const board = createBoard(boardProperties);
 	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
 	const [secondsElapsed, handleTimerStart, handleTimerStop] = useGameTimer();
+
+	const setCellsMineCount = () => {
+		const newBoard = [...gameBoard];
+		newBoard.forEach((row) => {
+			row.forEach((cell) => {
+				cell.mineCount = countMinesAroundCell(
+					newBoard,
+					boardProperties.height - 1,
+					boardProperties.width - 1,
+					cell.pos
+				);
+			});
+		});
+	};
 
 	/**
 	 * Sets the mines of the Minesweeper board after clicking the first cell
@@ -103,6 +209,7 @@ export function useMinesweeper() {
 	const handleCellClick = ({ row, column }: CellPosition) => {
 		if (!isGameStarted) {
 			setMines({ row, column });
+			setCellsMineCount();
 			setIsGameStarted(true);
 			handleTimerStart();
 		}
