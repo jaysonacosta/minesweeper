@@ -24,15 +24,8 @@ export default function Home() {
 					secondsElapsed={secondsElapsed}
 					flags={flags}
 				/>
-				<ul className="list-none">
-					<li>{isGameOver ? <>Game Over</> : <>Game Not Over</>}</li>
-					<li>
-						<button onClick={handleReset}>End Game</button>
-					</li>
-					<li>Game Over:</li>
-				</ul>
+				<ul className="list-none"></ul>
 			</div>
-			<div className="w-auto">Board</div>
 		</div>
 	);
 }

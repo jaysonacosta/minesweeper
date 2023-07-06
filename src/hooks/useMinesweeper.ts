@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
 	BoardProperties,
 	Cell,
@@ -164,9 +164,13 @@ export function useMinesweeper() {
 	const boardProperties = createBoardProperties();
 	const board = createBoard(boardProperties);
 	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
-	const [secondsElapsed, handleTimerStart, handleTimerStop] = useGameTimer();
+	const [secondsElapsed, handleTimerStart, handleTimerStop, handleTimerReset] =
+		useGameTimer();
 	const [flags, setFlags] = useState(boardProperties.mines);
 
+	/**
+	 * Iterates through all the `Cell`s on the board, tallies up the number of mines around them, and assigns to it that number.
+	 */
 	const setCellsMineCount = () => {
 		const newBoard = [...gameBoard];
 		newBoard.forEach((row) => {
@@ -320,7 +324,12 @@ export function useMinesweeper() {
 	};
 
 	const handleReset = () => {
-		setIsGameOver(true);
+		const boardReset = createBoard(boardProperties);
+		setGameBoard(boardReset);
+		handleTimerReset();
+		setFlags(boardProperties.mines);
+		setIsGameOver(false);
+		setIsGameStarted(false);
 	};
 
 	const game: Game = {

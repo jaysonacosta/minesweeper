@@ -6,6 +6,7 @@ export default function Board({
 	board,
 	handleCellClick,
 	handleCellRightClick,
+	handleReset,
 	secondsElapsed,
 	flags,
 	isGameOver,
@@ -23,7 +24,10 @@ export default function Board({
 					<p className="w-20 rounded-sm bg-slate-800 p-2 text-center">
 						{flags}
 					</p>
-					<p className="rounded-sm bg-slate-800 p-2 text-center">
+					<p
+						className="cursor-pointer rounded-sm bg-slate-800 p-2 text-center hover:bg-slate-600"
+						onClick={handleReset}
+					>
 						{!isGameOver ? (!isClicking ? '😃' : '😲') : '💀'}
 					</p>
 					<p className="w-20 rounded-sm bg-slate-800 p-2 text-center">
