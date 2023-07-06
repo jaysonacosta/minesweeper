@@ -4,14 +4,15 @@ import Cell from '../Cell/';
 export default function Board({
 	board,
 	handleCellClick,
-	properties,
+	handleCellRightClick,
 	secondsElapsed,
+	flags,
 }: Game) {
 	return (
 		<div>
 			<div className=" w-full bg-neutral-300 p-5">
 				<div className="flex justify-around font-mono text-2xl font-bold text-red-600">
-					<p className="rounded-sm bg-slate-800 p-2">{properties.mines}</p>
+					<p className="rounded-sm bg-slate-800 p-2">{flags}</p>
 					<p className="rounded-sm bg-slate-800 p-2">{secondsElapsed}</p>
 				</div>
 			</div>
@@ -27,7 +28,9 @@ export default function Board({
 										isMine={cell.isMine}
 										isRevealed={cell.isRevealed}
 										handleCellClick={handleCellClick}
+										handleCellRightClick={handleCellRightClick}
 										mineCount={cell.mineCount}
+										isFlagged={cell.isFlagged}
 									/>
 								);
 							})}

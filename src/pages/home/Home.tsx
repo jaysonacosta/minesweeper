@@ -5,9 +5,10 @@ export default function Home() {
 	const {
 		board,
 		isGameOver,
-		properties,
 		secondsElapsed,
+		flags,
 		handleCellClick,
+		handleCellRightClick,
 		handleReset,
 	} = useMinesweeper();
 
@@ -17,10 +18,11 @@ export default function Home() {
 				<Board
 					board={board}
 					isGameOver={isGameOver}
-					properties={properties}
 					handleCellClick={handleCellClick}
+					handleCellRightClick={handleCellRightClick}
 					handleReset={handleReset}
 					secondsElapsed={secondsElapsed}
+					flags={flags}
 				/>
 				<ul className="list-none">
 					<li>{isGameOver ? <>Game Over</> : <>Game Not Over</>}</li>

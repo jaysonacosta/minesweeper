@@ -44,6 +44,7 @@ function createBoard(properties: BoardProperties) {
 				isMine: false,
 				isRevealed: false,
 				mineCount: 0,
+				isFlagged: false,
 			})
 		)
 	);
@@ -164,6 +165,7 @@ export function useMinesweeper() {
 	const board = createBoard(boardProperties);
 	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
 	const [secondsElapsed, handleTimerStart, handleTimerStop] = useGameTimer();
+	const [flags, setFlags] = useState(boardProperties.mines);
 
 	const setCellsMineCount = () => {
 		const newBoard = [...gameBoard];
@@ -207,6 +209,13 @@ export function useMinesweeper() {
 	 * @param pos The position of the `Cell`.
 	 */
 	const handleCellClick = ({ row, column }: CellPosition) => {
+		const newBoard = [...gameBoard];
+		const cell = newBoard[row][column];
+
+		if (cell.isFlagged) {
+			return;
+		}
+
 		if (!isGameStarted) {
 			setMines({ row, column });
 			setCellsMineCount();
@@ -214,8 +223,6 @@ export function useMinesweeper() {
 			handleTimerStart();
 		}
 
-		const newBoard = [...gameBoard];
-		const cell = newBoard[row][column];
 		if (cell) {
 			cell.isRevealed = true;
 			if (cell.isMine) {
@@ -226,16 +233,35 @@ export function useMinesweeper() {
 		}
 	};
 
+	/**
+	 * Handles the right click event for a Cell (flagging).
+	 * @param pos The position of the `Cell`.
+	 */
+	const handleCellRightClick = ({ row, column }: CellPosition) => {
+		const newBoard = [...gameBoard];
+		const cell = newBoard[row][column];
+		if (cell) {
+			if (cell.isRevealed) {
+				return;
+			}
+
+			cell.isFlagged = !cell.isFlagged;
+			setFlags((prev) => (cell.isFlagged ? prev - 1 : prev + 1));
+		}
+		setGameBoard(newBoard);
+	};
+
 	const handleReset = () => {
 		setIsGameOver(true);
 	};
 
 	const game: Game = {
 		board: gameBoard,
-		properties: boardProperties,
 		secondsElapsed,
 		isGameOver,
+		flags,
 		handleCellClick,
+		handleCellRightClick,
 		handleReset,
 	};
 

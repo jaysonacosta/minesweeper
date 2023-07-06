@@ -1,9 +1,10 @@
 export type Game = {
 	board: Cell[][];
-	properties: BoardProperties;
 	secondsElapsed: number;
 	isGameOver: boolean;
+	flags: number;
 	handleCellClick: (pos: CellPosition) => void;
+	handleCellRightClick: (pos: CellPosition) => void;
 	handleReset: () => void;
 };
 
@@ -11,6 +12,7 @@ export type Cell = {
 	pos: CellPosition;
 	isMine: boolean;
 	isRevealed: boolean;
+	isFlagged: boolean;
 	mineCount: number;
 };
 
