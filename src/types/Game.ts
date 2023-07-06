@@ -33,3 +33,14 @@ export interface BoardProperties {
 	width: number;
 	mines: number;
 }
+
+export enum MineCountColor {
+	ONE = 'text-blue-700',
+	TWO = 'text-green-700',
+	THREE = 'text-red-700',
+	FOUR = 'text-indigo-700',
+	FIVE = 'text-amber-700',
+	SIX = 'text-cyan-700',
+	SEVEN = 'text-black',
+	EIGHT = 'text-gray-700',
+}
