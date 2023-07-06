@@ -204,6 +204,72 @@ export function useMinesweeper() {
 		setGameBoard(newBoard);
 	};
 
+	const propogateReveal = (cell: Cell) => {
+		const newBoard = [...gameBoard];
+		const { row, column } = cell.pos;
+		const cellToPropogate = newBoard[row][column];
+		cellToPropogate.isRevealed = true;
+		setGameBoard(newBoard);
+
+		if (cellToPropogate.isMine) {
+			return;
+		}
+
+		if (cellToPropogate.mineCount === 0) {
+			let topLeftCell = null;
+			let topCell = null;
+			let topRightCell = null;
+			let rightCell = null;
+			let bottomRightCell = null;
+			let bottomCell = null;
+			let bottomLeftCell = null;
+			let leftCell = null;
+
+			const previousRow = newBoard[row - 1];
+			const nextRow = newBoard[row + 1];
+
+			rightCell = newBoard[row][column + 1];
+			leftCell = newBoard[row][column - 1];
+
+			if (previousRow) {
+				topLeftCell = previousRow[column - 1];
+				topCell = previousRow[column];
+				topRightCell = previousRow[column + 1];
+			}
+
+			if (nextRow) {
+				bottomRightCell = nextRow[column + 1];
+				bottomCell = nextRow[column];
+				bottomLeftCell = nextRow[column - 1];
+			}
+
+			if (topLeftCell && !topLeftCell.isRevealed) {
+				propogateReveal(topLeftCell);
+			}
+			if (topCell && !topCell.isRevealed) {
+				propogateReveal(topCell);
+			}
+			if (topRightCell && !topRightCell.isRevealed) {
+				propogateReveal(topRightCell);
+			}
+			if (rightCell && !rightCell.isRevealed) {
+				propogateReveal(rightCell);
+			}
+			if (bottomRightCell && !bottomRightCell.isRevealed) {
+				propogateReveal(bottomRightCell);
+			}
+			if (bottomCell && !bottomCell.isRevealed) {
+				propogateReveal(bottomCell);
+			}
+			if (bottomLeftCell && !bottomLeftCell.isRevealed) {
+				propogateReveal(bottomLeftCell);
+			}
+			if (leftCell && !leftCell.isRevealed) {
+				propogateReveal(leftCell);
+			}
+		}
+	};
+
 	/**
 	 * Handles the click event for a Cell.
 	 * @param pos The position of the `Cell`.
@@ -230,6 +296,7 @@ export function useMinesweeper() {
 				handleTimerStop();
 			}
 			setGameBoard(newBoard);
+			propogateReveal(cell);
 		}
 	};
 
@@ -240,6 +307,7 @@ export function useMinesweeper() {
 	const handleCellRightClick = ({ row, column }: CellPosition) => {
 		const newBoard = [...gameBoard];
 		const cell = newBoard[row][column];
+
 		if (cell) {
 			if (cell.isRevealed) {
 				return;
