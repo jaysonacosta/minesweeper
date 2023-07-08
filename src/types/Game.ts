@@ -6,6 +6,7 @@ export type Game = {
 	handleCellClick: (pos: CellPosition) => void;
 	handleCellRightClick: (pos: CellPosition) => void;
 	handleReset: () => void;
+	handleGameDifficultyChange: (difficulty: GameDifficulty) => void;
 };
 
 export type Cell = {

@@ -161,7 +161,8 @@ function getRandomInt(min: number, max: number) {
 export function useMinesweeper() {
 	const [isGameStarted, setIsGameStarted] = useState(false);
 	const [isGameOver, setIsGameOver] = useState(false);
-	const boardProperties = createBoardProperties();
+	let gameDifficulty = GameDifficulty.NOVICE;
+	const boardProperties = createBoardProperties(gameDifficulty);
 	const board = createBoard(boardProperties);
 	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
 	const [secondsElapsed, handleTimerStart, handleTimerStop, handleTimerReset] =
@@ -324,12 +325,18 @@ export function useMinesweeper() {
 	};
 
 	const handleReset = () => {
-		const boardReset = createBoard(boardProperties);
+		const propertiesReset = createBoardProperties(gameDifficulty);
+		const boardReset = createBoard(propertiesReset);
 		setGameBoard(boardReset);
 		handleTimerReset();
 		setFlags(boardProperties.mines);
 		setIsGameOver(false);
 		setIsGameStarted(false);
+	};
+
+	const handleGameDifficultyChange = (newDifficulty: GameDifficulty) => {
+		gameDifficulty = newDifficulty;
+		handleReset();
 	};
 
 	const game: Game = {
@@ -340,6 +347,7 @@ export function useMinesweeper() {
 		handleCellClick,
 		handleCellRightClick,
 		handleReset,
+		handleGameDifficultyChange,
 	};
 
 	return game;
