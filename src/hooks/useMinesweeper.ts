@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
 	BoardProperties,
 	Cell,
@@ -161,13 +161,26 @@ function getRandomInt(min: number, max: number) {
 export function useMinesweeper() {
 	const [isGameStarted, setIsGameStarted] = useState(false);
 	const [isGameOver, setIsGameOver] = useState(false);
-	let gameDifficulty = GameDifficulty.NOVICE;
-	const boardProperties = createBoardProperties(gameDifficulty);
+	const [gameDifficulty, setGameDifficulty] = useState(GameDifficulty.NOVICE);
+	let boardProperties = createBoardProperties(gameDifficulty);
 	const board = createBoard(boardProperties);
 	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
 	const [secondsElapsed, handleTimerStart, handleTimerStop, handleTimerReset] =
 		useGameTimer();
 	const [flags, setFlags] = useState(boardProperties.mines);
+
+	const revealAllMines = () => {
+		const newBoard = [...gameBoard];
+		newBoard.forEach((row) => {
+			row.forEach((cell) => {
+				if (cell.isMine) {
+					cell.isRevealed = true;
+				}
+			});
+		});
+
+		setGameBoard(newBoard);
+	};
 
 	/**
 	 * Iterates through all the `Cell`s on the board, tallies up the number of mines around them, and assigns to it that number.
@@ -184,6 +197,8 @@ export function useMinesweeper() {
 				);
 			});
 		});
+
+		setGameBoard(newBoard);
 	};
 
 	/**
@@ -197,7 +212,13 @@ export function useMinesweeper() {
 			const randomRow = getRandomInt(0, boardProperties.height);
 			const randomColumn = getRandomInt(0, boardProperties.width);
 			const cell = newBoard[randomRow][randomColumn];
-			if (cell.pos.row === row && cell.pos.column === column) {
+			if (
+				(cell.pos.row === row && cell.pos.column === column) ||
+				cell.pos.row === row - 1 ||
+				cell.pos.row === row + 1 ||
+				cell.pos.column === column - 1 ||
+				cell.pos.column === column + 1
+			) {
 				continue;
 			}
 			if (!cell.isMine) {
@@ -213,12 +234,13 @@ export function useMinesweeper() {
 		const newBoard = [...gameBoard];
 		const { row, column } = cell.pos;
 		const cellToPropogate = newBoard[row][column];
-		cellToPropogate.isRevealed = true;
-		setGameBoard(newBoard);
 
-		if (cellToPropogate.isMine) {
+		if (cellToPropogate.isFlagged) {
 			return;
 		}
+
+		cellToPropogate.isRevealed = true;
+		setGameBoard(newBoard);
 
 		if (cellToPropogate.mineCount === 0) {
 			let topLeftCell = null;
@@ -280,9 +302,11 @@ export function useMinesweeper() {
 	 * @param pos The position of the `Cell`.
 	 */
 	const handleCellClick = ({ row, column }: CellPosition) => {
+		if (isGameOver) {
+			return;
+		}
 		const newBoard = [...gameBoard];
 		const cell = newBoard[row][column];
-
 		if (cell.isFlagged) {
 			return;
 		}
@@ -298,6 +322,7 @@ export function useMinesweeper() {
 			cell.isRevealed = true;
 			if (cell.isMine) {
 				setIsGameOver(true);
+				revealAllMines();
 				handleTimerStop();
 			}
 			setGameBoard(newBoard);
@@ -310,6 +335,10 @@ export function useMinesweeper() {
 	 * @param pos The position of the `Cell`.
 	 */
 	const handleCellRightClick = ({ row, column }: CellPosition) => {
+		if (isGameOver) {
+			return;
+		}
+
 		const newBoard = [...gameBoard];
 		const cell = newBoard[row][column];
 
@@ -324,9 +353,9 @@ export function useMinesweeper() {
 		setGameBoard(newBoard);
 	};
 
-	const handleReset = () => {
-		const propertiesReset = createBoardProperties(gameDifficulty);
-		const boardReset = createBoard(propertiesReset);
+	const handleReset = (newDifficulty: GameDifficulty = gameDifficulty) => {
+		boardProperties = createBoardProperties(newDifficulty);
+		const boardReset = createBoard(boardProperties);
 		setGameBoard(boardReset);
 		handleTimerReset();
 		setFlags(boardProperties.mines);
@@ -335,8 +364,8 @@ export function useMinesweeper() {
 	};
 
 	const handleGameDifficultyChange = (newDifficulty: GameDifficulty) => {
-		gameDifficulty = newDifficulty;
-		handleReset();
+		setGameDifficulty(newDifficulty);
+		handleReset(newDifficulty);
 	};
 
 	const game: Game = {
