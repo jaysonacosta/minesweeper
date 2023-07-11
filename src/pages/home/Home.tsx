@@ -5,19 +5,19 @@ import { GameDifficulty } from '../../types/Game';
 
 export default function Home() {
 	const [difficulty, setDifficulty] = useState(GameDifficulty.NOVICE);
+	const [isMenuActive, setIsMenuActive] = useState(false);
 
 	const {
 		board,
 		isGameOver,
 		secondsElapsed,
 		flags,
+		isGameWon,
 		handleCellClick,
 		handleCellRightClick,
 		handleReset,
 		handleGameDifficultyChange,
 	} = useMinesweeper();
-
-	const [isMenuActive, setIsMenuActive] = useState(false);
 
 	const chooseDifficulty = (evt: FormEvent<HTMLInputElement>) => {
 		let chosenDifficulty: GameDifficulty;
@@ -51,6 +51,7 @@ export default function Home() {
 				<Board
 					board={board}
 					isGameOver={isGameOver}
+					isGameWon={isGameWon}
 					handleCellClick={handleCellClick}
 					handleCellRightClick={handleCellRightClick}
 					handleReset={handleReset}

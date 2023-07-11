@@ -57,11 +57,11 @@ export default function Cell({
 			onClick={() => {
 				handleCellClick(pos);
 			}}
-			className={`flex h-8 w-8 cursor-pointer items-center justify-center font-mono ${
+			className={`flex h-6 w-6 cursor-pointer items-center justify-center font-mono ${
 				!isRevealed ? 'bg-slate-500' : 'bg-slate-400'
 			}`}
 		>
-			{!isRevealed && isFlagged && <span>⛳️</span>}
+			{!isRevealed && isFlagged && <span>🚩</span>}
 			{isRevealed && !isMine && (
 				<span className={`${mineCountColor} font-extrabold`}>
 					{mineCount !== 0 ? mineCount : null}

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { MouseEvent, useState } from 'react';
 import { Game } from '../../types/Game';
 import Cell from '../Cell/';
 
@@ -7,6 +7,7 @@ export default function Board({
 	handleCellClick,
 	handleCellRightClick,
 	handleReset,
+	isGameWon,
 	secondsElapsed,
 	flags,
 	isGameOver,
@@ -15,6 +16,12 @@ export default function Board({
 
 	const onMouseEvent = () => {
 		setIsClicking((prev) => !prev);
+	};
+
+	const disableContextMenu = (
+		evt: MouseEvent<HTMLDivElement, globalThis.MouseEvent>
+	) => {
+		evt.preventDefault();
 	};
 
 	return (
@@ -26,9 +33,15 @@ export default function Board({
 					</p>
 					<p
 						className="cursor-pointer rounded-sm bg-slate-800 p-2 text-center hover:bg-slate-600"
-						onClick={handleReset}
+						onClick={() => handleReset()}
 					>
-						{!isGameOver ? (!isClicking ? '😃' : '😲') : '💀'}
+						{!isGameOver
+							? !isClicking
+								? '😃'
+								: '😲'
+							: !isGameWon
+							? '💀'
+							: '🎉'}
 					</p>
 					<p className="w-20 rounded-sm bg-slate-800 p-2 text-center">
 						{secondsElapsed}
@@ -39,6 +52,7 @@ export default function Board({
 				className="flex flex-col gap-1 bg-neutral-100 p-1"
 				onMouseDown={onMouseEvent}
 				onMouseUp={onMouseEvent}
+				onContextMenu={disableContextMenu}
 			>
 				{board.map((row, idx) => {
 					return (

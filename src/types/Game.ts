@@ -3,6 +3,7 @@ export type Game = {
 	secondsElapsed: number;
 	isGameOver: boolean;
 	flags: number;
+	isGameWon: boolean;
 	handleCellClick: (pos: CellPosition) => void;
 	handleCellRightClick: (pos: CellPosition) => void;
 	handleReset: () => void;
@@ -44,4 +45,8 @@ export enum MineCountColor {
 	SIX = 'text-cyan-700',
 	SEVEN = 'text-black',
 	EIGHT = 'text-gray-700',
+}
+
+export enum LocalStorageKeys {
+	Difficulty = 'DIFFICULTY',
 }

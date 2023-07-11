@@ -5,8 +5,10 @@ import {
 	CellPosition,
 	Game,
 	GameDifficulty,
+	LocalStorageKeys,
 } from '../types/Game';
 import useGameTimer from './useGameTimer';
+import useLocalStorage from './useLocalStorage';
 
 function createBoardProperties(
 	difficulty: GameDifficulty = GameDifficulty.NOVICE
@@ -161,7 +163,9 @@ function getRandomInt(min: number, max: number) {
 export function useMinesweeper() {
 	const [isGameStarted, setIsGameStarted] = useState(false);
 	const [isGameOver, setIsGameOver] = useState(false);
-	const [gameDifficulty, setGameDifficulty] = useState(GameDifficulty.NOVICE);
+	const [isGameWon, setIsGameWon] = useState(false);
+	const savedDifficulty = useLocalStorage();
+	const [gameDifficulty, setGameDifficulty] = useState(savedDifficulty);
 	let boardProperties = createBoardProperties(gameDifficulty);
 	const board = createBoard(boardProperties);
 	const [gameBoard, setGameBoard] = useState<Cell[][]>(board);
@@ -327,6 +331,7 @@ export function useMinesweeper() {
 			}
 			setGameBoard(newBoard);
 			propogateReveal(cell);
+			checkGameWon(newBoard);
 		}
 	};
 
@@ -364,8 +369,27 @@ export function useMinesweeper() {
 	};
 
 	const handleGameDifficultyChange = (newDifficulty: GameDifficulty) => {
+		localStorage.setItem(LocalStorageKeys.Difficulty, newDifficulty);
 		setGameDifficulty(newDifficulty);
 		handleReset(newDifficulty);
+	};
+
+	const checkGameWon = (gameBoard: Cell[][]) => {
+		let cellsLeft = 0;
+		gameBoard.forEach((row) => {
+			row.forEach((cell) => {
+				if (!cell.isRevealed) {
+					cellsLeft++;
+				}
+			});
+		});
+
+		if (cellsLeft === boardProperties.mines) {
+			setIsGameOver(true);
+			setIsGameWon(true);
+			revealAllMines();
+			handleTimerStop();
+		}
 	};
 
 	const game: Game = {
@@ -373,6 +397,7 @@ export function useMinesweeper() {
 		secondsElapsed,
 		isGameOver,
 		flags,
+		isGameWon,
 		handleCellClick,
 		handleCellRightClick,
 		handleReset,
