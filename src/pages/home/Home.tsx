@@ -19,6 +19,7 @@ export default function Home() {
 
 	const [difficulty, setDifficulty] = useState(gameDifficulty);
 	const [isGameMenuActive, setIsGameMenuActive] = useState(false);
+	const [isControlsMenuActive, setIsControlsMenuActive] = useState(false);
 
 	const chooseDifficulty = (evt: FormEvent<HTMLInputElement>) => {
 		let chosenDifficulty: GameDifficulty;
@@ -68,11 +69,18 @@ export default function Home() {
 							className="w-full cursor-pointer bg-neutral-300 p-3 text-center hover:bg-neutral-400"
 							onClick={() => {
 								setIsGameMenuActive((prev) => !prev);
+								setIsControlsMenuActive(false);
 							}}
 						>
 							Game
 						</div>
-						<div className="w-full cursor-pointer bg-neutral-300 p-3 text-center hover:bg-neutral-400">
+						<div
+							className="w-full cursor-pointer bg-neutral-300 p-3 text-center hover:bg-neutral-400"
+							onClick={() => {
+								setIsControlsMenuActive((prev) => !prev);
+								setIsGameMenuActive(false);
+							}}
+						>
 							Controls
 						</div>
 					</ul>
@@ -124,6 +132,22 @@ export default function Home() {
 							>
 								New Game
 							</button>
+						</div>
+					)}
+
+					{isControlsMenuActive && (
+						<div className="flex flex-col gap-2 bg-neutral-300 p-3 font-mono font-semibold text-black">
+							<h2 className="text-xl">Desktop</h2>
+							<ul className="list-disc p-5">
+								<li>Left-click an empty square to reveal it.</li>
+								<li>Right-click an empty square to flag it.</li>
+								<li>Click the smiley face to start a new game.</li>
+							</ul>
+							<h2 className="text-xl">Mobile</h2>
+							<ul className="list-disc p-5">
+								<li>Tap an empty square to reveal it.</li>
+								<li>Long-press an empty square to flag it.</li>
+							</ul>
 						</div>
 					)}
 				</div>
