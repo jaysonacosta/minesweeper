@@ -398,6 +398,7 @@ export function useMinesweeper() {
 		isGameOver,
 		flags,
 		isGameWon,
+		gameDifficulty,
 		handleCellClick,
 		handleCellRightClick,
 		handleReset,

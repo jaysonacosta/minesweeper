@@ -4,20 +4,21 @@ import { FormEvent, useState } from 'react';
 import { GameDifficulty } from '../../types/Game';
 
 export default function Home() {
-	const [difficulty, setDifficulty] = useState(GameDifficulty.NOVICE);
-	const [isMenuActive, setIsMenuActive] = useState(false);
-
 	const {
 		board,
 		isGameOver,
 		secondsElapsed,
 		flags,
 		isGameWon,
+		gameDifficulty,
 		handleCellClick,
 		handleCellRightClick,
 		handleReset,
 		handleGameDifficultyChange,
 	} = useMinesweeper();
+
+	const [difficulty, setDifficulty] = useState(gameDifficulty);
+	const [isGameMenuActive, setIsGameMenuActive] = useState(false);
 
 	const chooseDifficulty = (evt: FormEvent<HTMLInputElement>) => {
 		let chosenDifficulty: GameDifficulty;
@@ -58,6 +59,7 @@ export default function Home() {
 					handleGameDifficultyChange={handleGameDifficultyChange}
 					secondsElapsed={secondsElapsed}
 					flags={flags}
+					gameDifficulty={gameDifficulty}
 				/>
 				<br />
 				<div className="flex flex-col gap-2">
@@ -65,7 +67,7 @@ export default function Home() {
 						<div
 							className="w-full cursor-pointer bg-neutral-300 p-3 text-center hover:bg-neutral-400"
 							onClick={() => {
-								setIsMenuActive((prev) => !prev);
+								setIsGameMenuActive((prev) => !prev);
 							}}
 						>
 							Game
@@ -75,7 +77,7 @@ export default function Home() {
 						</div>
 					</ul>
 
-					{isMenuActive && (
+					{isGameMenuActive && (
 						<div className="flex flex-col gap-2 bg-neutral-300 p-3 font-mono font-semibold text-black">
 							<span>
 								<input
@@ -83,7 +85,7 @@ export default function Home() {
 									name="game_difficulty"
 									value={GameDifficulty.NOVICE}
 									id="novice"
-									defaultChecked={true}
+									defaultChecked={gameDifficulty === GameDifficulty.NOVICE}
 									onChange={chooseDifficulty}
 								/>
 								&nbsp;
@@ -95,6 +97,9 @@ export default function Home() {
 									name="game_difficulty"
 									value={GameDifficulty.INTERMEDIATE}
 									id="intermediate"
+									defaultChecked={
+										gameDifficulty === GameDifficulty.INTERMEDIATE
+									}
 									onChange={chooseDifficulty}
 								/>
 								&nbsp;
@@ -106,6 +111,7 @@ export default function Home() {
 									name="game_difficulty"
 									value={GameDifficulty.EXPERT}
 									id="expert"
+									defaultChecked={gameDifficulty === GameDifficulty.EXPERT}
 									onChange={chooseDifficulty}
 								/>
 								&nbsp;

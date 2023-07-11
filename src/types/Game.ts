@@ -4,6 +4,7 @@ export type Game = {
 	isGameOver: boolean;
 	flags: number;
 	isGameWon: boolean;
+	gameDifficulty: GameDifficulty;
 	handleCellClick: (pos: CellPosition) => void;
 	handleCellRightClick: (pos: CellPosition) => void;
 	handleReset: () => void;
