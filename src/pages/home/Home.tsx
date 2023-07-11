@@ -49,7 +49,7 @@ export default function Home() {
 
 	return (
 		<div className="flex flex-col items-center justify-center">
-			<div className="w-auto">
+			<div className="flex w-auto flex-col items-center">
 				<Board
 					board={board}
 					isGameOver={isGameOver}
@@ -63,7 +63,7 @@ export default function Home() {
 					gameDifficulty={gameDifficulty}
 				/>
 				<br />
-				<div className="flex flex-col gap-2">
+				<div className="flex w-full flex-col gap-2">
 					<ul className="flex list-none justify-between gap-2 font-mono font-semibold text-black">
 						<div
 							className="w-full cursor-pointer bg-neutral-300 p-3 text-center hover:bg-neutral-400"

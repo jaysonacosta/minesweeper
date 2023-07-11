@@ -25,7 +25,7 @@ export default function Board({
 	};
 
 	return (
-		<div>
+		<div className="w-min">
 			<div className=" w-full bg-neutral-300 p-5">
 				<div className="flex justify-around font-mono text-2xl font-bold text-red-600">
 					<p className="w-20 rounded-sm bg-slate-800 p-2 text-center">
