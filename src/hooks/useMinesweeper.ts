@@ -366,6 +366,7 @@ export function useMinesweeper() {
 		setFlags(boardProperties.mines);
 		setIsGameOver(false);
 		setIsGameStarted(false);
+		setIsGameWon(false);
 	};
 
 	const handleGameDifficultyChange = (newDifficulty: GameDifficulty) => {
